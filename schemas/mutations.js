@@ -57,22 +57,6 @@ const RootMutation = new GraphQLObjectType({
                     return 'The error is', err;
                  });
         }
-      },
-      products: {
-        type: ProductType,
-        args: { },
-        resolve(parentValue, args) {
-          const query = `SELECT * FROM product`;
-          const values = args;
-  
-          return db.one(query)
-               .then(data => {
-                  return [data];
-               })
-               .catch(err => {
-                  return 'The error is', err;
-               });
-        }
       }
   }
 });

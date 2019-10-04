@@ -1,6 +1,6 @@
 const { db } = require("../pgAdaptor");
-const { GraphQLObjectType, GraphQLID } = require("graphql");
-const { ProductType } = require("./types");
+const { GraphQLObjectType, GraphQLID, GraphQLList, GraphQLString } = require("graphql");
+const { ProductType, ProductsType } = require("./types");
 
 const RootQuery = new GraphQLObjectType({
     name: "RootQueryType",
@@ -19,23 +19,17 @@ const RootQuery = new GraphQLObjectType({
         }
       },
       products: {
-        type: ProductType,
-        args: { },
-        async resolve(parentValue, args) {
-          const query = `SELECT * FROM product`;
-          const values = args;
-          getProducts();
-          
-          return getProducts();
+        type: ProductsType,
+        args: {  },
+        resolve(parentValue, args) {
+          const query = `SELECT id,name,description FROM product`;
+          return db
+            .any(query)
+            .then(res => res)
+            .catch(err => err);
         }
       }
     }
   });
-
-  async function getProducts(){
-    const query = `SELECT * FROM product`;
-    const data = await db.any(query);
-    return data;
-  }
   
   exports.query = RootQuery;
